@@ -65,15 +65,13 @@ class Talos(AbstractHumanoidRobot):
         }
 
         if fromRosParam:
-            ltimeStep=0.005
-            if device is not None:
-                ltimeStep = device.getTimeStep()
+            ltimeStep = device.getTimeStep() if device is not None else 0.005
 
-            print("Using SoT parameter \"/robot_description\"")
+            print('Using SoT parameter "/robot_description"')
             paramName = "/robot_description"
             self.param_server = ParameterServer("param_server")
             self.param_server.init_simple(ltimeStep)
-            model2_string=self.param_server.getParameter(paramName)
+            model2_string = self.param_server.getParameter(paramName)
             self.loadModelFromString(model2_string,
                                      rootJointType=pinocchio.JointModelFreeFlyer,
                                      removeMimicJoints=True)
