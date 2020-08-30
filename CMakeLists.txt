@@ -30,20 +30,38 @@ PROJECT(${PROJECT_NAME} ${PROJECT_ARGS})
 # Project dependencies
 SET(BOOST_COMPONENTS filesystem system thread program_options
   unit_test_framework python)
-SET(CATKIN_REQUIRED_COMPONENTS roscpp std_msgs)
-SET(CATKIN_DEPENDS_LIBRARIES ros_bridge sot_loader)
 
 ADD_PROJECT_DEPENDENCY(sot-dynamic-pinocchio REQUIRED)
 ADD_PROJECT_DEPENDENCY(dynamic-graph-python REQUIRED)
-ADD_PROJECT_DEPENDENCY(dynamic_graph_bridge REQUIRED)
-ADD_PROJECT_DEPENDENCY(roscpp REQUIRED)
-ADD_PROJECT_DEPENDENCY(talos_data REQUIRED)
+ADD_PROJECT_DEPENDENCY(example-robot-data REQUIRED)
+
+IF(DEFINED ENV{ROS_VERSION} )
+
+  ADD_PROJECT_DEPENDENCY(dynamic_graph_bridge REQUIRED)
+  ADD_REQUIRED_DEPENDENCY(dynamic_graph_bridge_msgs)
+  FIND_PACKAGE(catkin REQUIRED COMPONENTS ${CATKIN_REQUIRED_COMPONENTS})
+
+  # IF ROS1
+  IF ($ENV{ROS_VERSION} EQUAL 1)
+    ADD_PROJECT_DEPENDENCY(roscpp REQUIRED)
+  ENDIF()
+
+  # IF ROS2
+  IF ($ENV{ROS_VERSION} EQUAL 2)
+    # Dependency to roscpp is also optional
+    ADD_PROJECT_DEPENDENCY(ros)
+    find_package(ament_cmake REQUIRED)
+    find_package(rclcpp REQUIRED)
+  ENDIF()
+
+  ADD_PROJECT_DEPENDENCY(talos_data REQUIRED)
+
+ENDIF(DEFINED ENV{ROS_VERSION})
+
 ADD_PROJECT_DEPENDENCY(pyrene-motions REQUIRED)
-ADD_REQUIRED_DEPENDENCY(dynamic_graph_bridge_msgs)
 
 FINDPYTHON()
 SEARCH_FOR_BOOST()
-FIND_PACKAGE(catkin REQUIRED COMPONENTS ${CATKIN_REQUIRED_COMPONENTS})
 
 ADD_SUBDIRECTORY(src)
 

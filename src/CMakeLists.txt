@@ -20,8 +20,7 @@ ADD_LIBRARY(${DEVICE_NAME} SHARED sot-talos-device.cpp)
 # Link the dynamic library containing the SoT with its dependencies.
 TARGET_LINK_LIBRARIES(${DEVICE_NAME}
   sot-core::sot-core
-  dynamic-graph-python::dynamic-graph-python
-  dynamic_graph_bridge::ros_bridge)
+  dynamic-graph-python::dynamic-graph-python)
 
 INSTALL(TARGETS ${DEVICE_NAME} EXPORT ${TARGETS_EXPORT_NAME} DESTINATION lib)
 
@@ -31,15 +30,20 @@ SET(NEW_ENTITY_CLASS ${ENTITIES})
 DYNAMIC_GRAPH_PYTHON_MODULE("sot/talos/${PYTHON_LIBRARY_NAME}"
   ${DEVICE_NAME} sot-talos-${PYTHON_LIBRARY_NAME}-wrap)
 
-# Add the library to wrap the controller of Pyrene.
-SET(CONTROLLER_NAME sot-pyrene-controller)
-ADD_LIBRARY(${CONTROLLER_NAME} SHARED ${CONTROLLER_NAME}.cpp
-  sot-talos-controller.cpp)
+# TEST IF ROS IS PRESENT AND SETUP
+IF(DEFINED ENV{ROS_VERSION} )
 
-# Link the dynamic library containing the SoT with its dependencies.
-TARGET_LINK_LIBRARIES(${CONTROLLER_NAME} ${DEVICE_NAME}
-  dynamic_graph_bridge::ros_interpreter
-  dynamic_graph_bridge::ros_bridge)
-PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} dynamic_graph_bridge_msgs)
+  # Add the library to wrap the controller of Pyrene.
+  SET(CONTROLLER_NAME sot-pyrene-controller)
+  ADD_LIBRARY(${CONTROLLER_NAME} SHARED ${CONTROLLER_NAME}.cpp
+    sot-talos-controller.cpp)
+
+  # Link the dynamic library containing the SoT with its dependencies.
+  TARGET_LINK_LIBRARIES(${CONTROLLER_NAME} ${DEVICE_NAME}
+    dynamic_graph_bridge::ros_interpreter
+    dynamic_graph_bridge::ros_bridge)
+  PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} dynamic_graph_bridge_msgs)
+
+ENDIF(DEFINED ENV{ROS_VERSION})
 
 INSTALL(TARGETS ${CONTROLLER_NAME} EXPORT ${TARGETS_EXPORT_NAME} DESTINATION lib)
