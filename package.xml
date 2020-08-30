@@ -1,4 +1,4 @@
-<package format="2">
+<package format="3">
   <name>sot-talos</name>
   <version>1.2.2</version>
   <description>
@@ -12,19 +12,19 @@
 
   <build_depend>roscpp</build_depend>
   <build_depend>sot-dynamic-pinocchio</build_depend>
-  <build_depend>talos_data</build_depend>
+  <build_depend condition="$ROS_VERSION == 1">talos_data</build_depend>
   <build_depend>pyrene-motions</build_depend>
-  <build_depend>dynamic_graph_bridge</build_depend>
-  <build_depend>dynamic_graph_bridge_msgs</build_depend>
+  <build_depend condition="$ROS_VERSION == 1">dynamic_graph_bridge</build_depend>
+  <build_depend condition="$ROS_VERSION == 1">dynamic_graph_bridge_msgs</build_depend>
 
   <exec_depend>roscpp</exec_depend>
   <exec_depend>sot-dynamic-pinocchio</exec_depend>
-  <exec_depend>talos_data</exec_depend>
+  <exec_depend condition="$ROS_VERSION == 1">talos_data</exec_depend>
   <exec_depend>pyrene-motions</exec_depend>
-  <exec_depend>dynamic_graph_bridge</exec_depend>
-  <exec_depend>dynamic_graph_bridge_msgs</exec_depend>
+  <exec_depend condition="$ROS_VERSION == 1">dynamic_graph_bridge</exec_depend>
+  <exec_depend condition="$ROS_VERSION == 1">dynamic_graph_bridge_msgs</exec_depend>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
 
   <doc_depend>doxygen</doc_depend>
 
